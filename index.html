@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🇵🇹 Evropská Portugalština</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a3a5c;
+    --navy-dark: #0f2238;
+    --gold: #c9922a;
+    --gold-light: #f0d080;
+    --cream: #f7f3ec;
+    --cream-dark: #ede6d8;
+    --green: #2c5f2e;
+    --red: #8b1a1a;
+    --text: #2c1810;
+    --muted: #7a6e64;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── TILE PATTERN ───────────────────────────────────── */
+  .tile-bg {
+    background-color: var(--navy-dark);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(201,146,42,0.06) 0, rgba(201,146,42,0.06) 1px, transparent 0, transparent 50%),
+      repeating-linear-gradient(-45deg, rgba(201,146,42,0.06) 0, rgba(201,146,42,0.06) 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px;
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────── */
+  .app { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sidebar-logo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--gold-light);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav { padding: 12px 0; flex: 1; }
+
+  .nav-section {
+    padding: 8px 20px 4px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    position: relative;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-item.active {
+    background: rgba(201,146,42,0.15);
+    color: var(--gold-light);
+    border-left-color: var(--gold);
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    background: var(--green);
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 6px;
+  }
+
+  .nav-badge.gold { background: var(--gold); color: var(--navy-dark); }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+  }
+
+  /* ── MAIN CONTENT ───────────────────────────────────── */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    max-width: 860px;
+  }
+
+  .page { display: none; padding: 32px 36px 60px; animation: fadeIn 0.2s ease; }
+  .page.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ── PAGE HEADER ────────────────────────────────────── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--cream-dark);
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+
+  .page-subtitle { font-size: 16px; color: var(--muted); margin-top: 4px; }
+
+  .lesson-badge {
+    background: var(--navy);
+    color: var(--gold-light);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+
+  /* ── TABS ───────────────────────────────────────────── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--cream-dark);
+  }
+
+  .tab-btn {
+    padding: 10px 18px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+
+  .tab-btn:hover { color: var(--navy); }
+  .tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── VOCAB TABLE ────────────────────────────────────── */
+  .vocab-table { width: 100%; border-collapse: collapse; }
+
+  .vocab-table th {
+    background: var(--navy);
+    color: var(--gold-light);
+    padding: 10px 14px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .vocab-table th:first-child { border-radius: 6px 0 0 0; }
+  .vocab-table th:last-child { border-radius: 0 6px 0 0; }
+
+  .vocab-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--cream-dark);
+    font-size: 15px;
+  }
+
+  .vocab-table tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+  .vocab-table tr:hover td { background: rgba(201,146,42,0.06); }
+
+  .pt-word { font-style: italic; font-weight: 600; color: var(--navy); font-size: 16px; }
+  .cs-word { color: var(--green); font-weight: 600; }
+  .note-text { color: var(--muted); font-size: 13px; }
+
+  /* ── PHRASES ────────────────────────────────────────── */
+  .phrase-card {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-left: 4px solid var(--navy);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+
+  .phrase-pt { font-style: italic; font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .phrase-cs { font-size: 14px; color: var(--muted); }
+
+  /* ── TIPS ───────────────────────────────────────────── */
+  .tip-card {
+    background: #fdf8ee;
+    border: 1px solid #e8d8a0;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+
+  .tip-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .tip-icon { font-size: 22px; }
+  .tip-title { font-weight: 700; color: var(--navy); font-size: 15px; }
+  .tip-body { font-size: 14px; line-height: 1.7; color: #444; }
+
+  /* ── HOMEWORK ───────────────────────────────────────── */
+  .homework-box {
+    background: var(--navy-dark);
+    color: var(--cream);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 24px;
+  }
+
+  .homework-box h3 { color: var(--gold-light); margin-bottom: 12px; font-family: 'Playfair Display', serif; }
+
+  .homework-box ol { padding-left: 20px; }
+  .homework-box li { padding: 5px 0; font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.85); }
+
+  /* ── QUIZ ───────────────────────────────────────────── */
+  .quiz-setup {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .quiz-setup h2 { font-family: 'Playfair Display', serif; color: var(--navy); margin-bottom: 16px; }
+
+  .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+
+  .quiz-option-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--cream-dark);
+    background: var(--white);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+
+  .quiz-option-btn:hover { border-color: var(--navy); color: var(--navy); }
+  .quiz-option-btn.selected { border-color: var(--navy); background: var(--navy); color: var(--white); }
+
+  .start-quiz-btn {
+    display: inline-block;
+    padding: 12px 32px;
+    background: var(--gold);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+
+  .start-quiz-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .start-quiz-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  /* quiz card */
+  .quiz-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 36px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+
+  .quiz-progress-bar {
+    background: var(--cream-dark);
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--navy), var(--gold));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .quiz-counter { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .quiz-word {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-style: italic;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .quiz-direction { font-size: 13px; color: var(--muted); margin-bottom: 28px; letter-spacing: 1px; text-transform: uppercase; }
+
+  .quiz-answer-area { margin-top: 8px; }
+
+  /* multiple choice */
+  .mc-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 500px; margin: 0 auto; }
+
+  .mc-btn {
+    padding: 14px 18px;
+    border: 2px solid var(--cream-dark);
+    background: var(--white);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .mc-btn:hover:not(:disabled) { border-color: var(--navy); background: #f0f4f8; }
+  .mc-btn.correct { border-color: var(--green); background: #eafbea; color: var(--green); font-weight: 700; }
+  .mc-btn.wrong { border-color: var(--red); background: #fbeaea; color: var(--red); }
+  .mc-btn:disabled { cursor: default; }
+
+  /* reveal mode */
+  .reveal-btn {
+    padding: 14px 40px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Source Sans 3', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 16px;
+  }
+
+  .reveal-btn:hover { background: var(--navy-dark); }
+
+  .revealed-answer {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green);
+    padding: 16px;
+    border: 2px solid var(--green);
+    border-radius: 8px;
+    display: inline-block;
+    min-width: 200px;
+  }
+
+  .reveal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+
+  .knew-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .knew-btn.yes { background: var(--green); color: #fff; }
+  .knew-btn.no { background: #ddd; color: #555; }
+  .knew-btn:hover { opacity: 0.85; }
+
+  .next-btn {
+    padding: 12px 32px;
+    background: var(--gold);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: all 0.15s;
+    margin-top: 16px;
+  }
+
+  .next-btn:hover { background: var(--gold-light); }
+
+  /* results */
+  .quiz-results {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  .result-score {
+    font-size: 72px;
+    font-family: 'Playfair Display', serif;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .result-label { font-size: 18px; color: var(--muted); margin-bottom: 24px; }
+  .result-stars { font-size: 36px; margin-bottom: 20px; }
+
+  /* ── CUSTOM VOCAB ────────────────────────────────────── */
+  .custom-form {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .custom-form h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--navy);
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+
+  .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+
+  .form-input {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
+    border: 2px solid var(--cream-dark);
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    background: var(--cream);
+    color: var(--text);
+    transition: border-color 0.15s;
+  }
+
+  .form-input:focus { outline: none; border-color: var(--navy); background: #fff; }
+  .form-input::placeholder { color: #aaa; }
+
+  .add-btn {
+    padding: 10px 24px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .add-btn:hover { background: var(--navy-dark); }
+
+  .custom-empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 16px;
+    transition: color 0.15s;
+    padding: 4px;
+  }
+
+  .delete-btn:hover { color: var(--red); }
+
+  /* ── PROGRESS PAGE ───────────────────────────────────── */
+  .progress-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+
+  .progress-card {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--cream-dark);
+    transition: background 0.2s;
+  }
+
+  .progress-card.done::before { background: var(--green); }
+  .progress-card:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+  .progress-emoji { font-size: 28px; margin-bottom: 8px; }
+  .progress-lesson-num { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; }
+  .progress-lesson-name { font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; color: var(--navy); margin: 4px 0; }
+  .progress-count { font-size: 13px; color: var(--muted); }
+
+  .progress-check {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--cream-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: transparent;
+  }
+
+  .progress-card.done .progress-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+
+  .stat-box {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 20px 24px;
+    flex: 1; min-width: 120px;
+    text-align: center;
+  }
+
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--navy); }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .quiz-history { margin-top: 24px; }
+  .quiz-history h3 { font-family: 'Playfair Display', serif; color: var(--navy); margin-bottom: 12px; }
+
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .history-score { font-weight: 700; color: var(--navy); }
+
+  /* ── GRAMMAR / NUMBERS PAGE ─────────────────────────── */
+  .grammar-section { margin-bottom: 32px; }
+  .grammar-section h2 { font-family: 'Playfair Display', serif; color: var(--navy); font-size: 26px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--cream-dark); }
+  .grammar-section h3 { color: var(--gold); font-size: 16px; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .grammar-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 15px; }
+  .grammar-table th { background: var(--navy); color: var(--gold-light); padding: 9px 14px; text-align: left; font-weight: 600; font-size: 13px; }
+  .grammar-table td { padding: 9px 14px; border-bottom: 1px solid var(--cream-dark); }
+  .grammar-table tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+  .grammar-table .big { font-size: 24px; font-weight: 700; color: var(--navy); text-align: center; }
+  .grammar-table .gold { color: var(--gold); }
+
+  .info-box {
+    background: #eef4fb;
+    border-left: 4px solid var(--navy);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #333;
+  }
+
+  .info-box strong { color: var(--navy); }
+
+  .numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .num-card {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+    transition: all 0.15s;
+  }
+
+  .num-card:hover { border-color: var(--navy); transform: translateY(-2px); }
+  .num-n { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--gold); font-weight: 700; }
+  .num-pt { font-style: italic; color: var(--navy); font-size: 13px; margin-top: 2px; }
+
+  /* ── MOBILE ─────────────────────────────────────────── */
+  .mobile-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--navy-dark);
+    color: var(--gold-light);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .hamburger { background: none; border: none; color: var(--gold-light); font-size: 22px; cursor: pointer; }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+  }
+
+  .sidebar-overlay.open { display: block; }
+
+  @media (max-width: 700px) {
+    .sidebar {
+      position: fixed;
+      left: -280px;
+      z-index: 300;
+      transition: left 0.25s ease;
+      height: 100vh;
+    }
+    .sidebar.open { left: 0; }
+    .mobile-header { display: flex; }
+    .main { max-width: 100%; }
+    .page { padding: 20px 18px 50px; }
+    .quiz-word { font-size: 32px; }
+    .mc-options { grid-template-columns: 1fr; }
+    .numbers-grid { grid-template-columns: repeat(4, 1fr); }
+    .form-row { flex-direction: column; }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy-dark);
+    color: var(--gold-light);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+  .toast.show { transform: none; opacity: 1; }
+
+  /* Lesson done banner */
+  .done-banner {
+    background: linear-gradient(135deg, var(--green), #3a7d3c);
+    color: #fff;
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+
+  .undone-btn { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar tile-bg" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Evropská<br>Portugalština 🇵🇹</div>
+      <div class="sidebar-sub">Osobní sešit</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Přehled</div>
+      <div class="nav-item active" onclick="showPage('progress')" id="nav-progress">
+        <span>📊</span> Můj pokrok
+      </div>
+      <div class="nav-item" onclick="showPage('quiz')" id="nav-quiz">
+        <span>🧠</span> Kvíz
+        <span class="nav-badge gold">nové</span>
+      </div>
+
+      <div class="nav-section" style="margin-top:8px">Lekce</div>
+      <div id="lesson-nav"></div>
+
+      <div class="nav-section" style="margin-top:8px">Extra</div>
+      <div class="nav-item" onclick="showPage('custom')" id="nav-custom">
+        <span>✏️</span> Vlastní slovíčka
+      </div>
+      <div class="nav-item" onclick="showPage('grammar')" id="nav-grammar">
+        <span>📌</span> Členy (o / a)
+      </div>
+      <div class="nav-item" onclick="showPage('numbers')" id="nav-numbers">
+        <span>🔢</span> Čísla
+      </div>
+    </nav>
+    <div class="sidebar-footer">Ukládáno v prohlížeči</div>
+  </div>
+
+  <!-- MOBILE HEADER -->
+  <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+  <div class="mobile-header">
+    <button class="hamburger" onclick="openSidebar()">☰</button>
+    <span>🇵🇹 Portugalština</span>
+    <span style="width:32px"></span>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- PROGRESS PAGE -->
+    <div class="page active" id="page-progress">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Můj pokrok</div>
+          <div class="page-subtitle">Přehled lekcí a výsledků kvízů</div>
+        </div>
+      </div>
+
+      <div class="stats-row" id="stats-row"></div>
+      <div class="progress-grid" id="progress-grid"></div>
+
+      <div class="quiz-history">
+        <h3>Historie kvízů</h3>
+        <div id="quiz-history-list"><p style="color:var(--muted);font-size:14px;font-style:italic">Zatím žádné kvízy. Začni procvičovat!</p></div>
+      </div>
+    </div>
+
+    <!-- QUIZ PAGE -->
+    <div class="page" id="page-quiz">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🧠 Kvíz</div>
+          <div class="page-subtitle">Procvičuj slovíčka</div>
+        </div>
+      </div>
+      <div id="quiz-setup-area"></div>
+      <div id="quiz-run-area" style="display:none"></div>
+    </div>
+
+    <!-- LESSON PAGES (generated) -->
+    <div id="lesson-pages"></div>
+
+    <!-- CUSTOM VOCAB PAGE -->
+    <div class="page" id="page-custom">
+      <div class="page-header">
+        <div>
+          <div class="page-title">✏️ Vlastní slovíčka</div>
+          <div class="page-subtitle">Přidej si slovíčka z podcastu nebo z vlastní hlavy</div>
+        </div>
+      </div>
+
+      <div class="custom-form">
+        <h3>Přidat slovíčko</h3>
+        <div class="form-row">
+          <input class="form-input" id="input-pt" placeholder="Portugalsky (př. o gato)" />
+          <input class="form-input" id="input-cs" placeholder="Česky (př. kočka)" />
+          <input class="form-input" id="input-note" placeholder="Poznámka (volitelné)" />
+          <button class="add-btn" onclick="addCustomWord()">+ Přidat</button>
+        </div>
+      </div>
+
+      <div id="custom-vocab-list"></div>
+    </div>
+
+    <!-- GRAMMAR PAGE -->
+    <div class="page" id="page-grammar">
+      <div class="page-header">
+        <div>
+          <div class="page-title">📌 Členy v portugalštině</div>
+          <div class="page-subtitle">Proč každé slovíčko psát s „o" nebo „a"</div>
+        </div>
+      </div>
+      <div id="grammar-content"></div>
+    </div>
+
+    <!-- NUMBERS PAGE -->
+    <div class="page" id="page-numbers">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🔢 Čísla</div>
+          <div class="page-subtitle">Základní čísla pro každodenní komunikaci</div>
+        </div>
+      </div>
+      <div id="numbers-content"></div>
+    </div>
+
+  </div><!-- /main -->
+  </div>
+</div><!-- /app -->
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
+const LESSONS = [
+  {
+    id: 1, emoji: "☕", topic: "O Café", subtitle: "Kavárna",
+    vocabulary: [
+      { pt: "o café", cs: "káva / kavárna", note: "záleží na kontextu" },
+      { pt: "a chávena", cs: "šálek", note: "EP výraz (BR: a xícara)" },
+      { pt: "o copo", cs: "sklenice", note: "" },
+      { pt: "o leite", cs: "mléko", note: "" },
+      { pt: "o açúcar", cs: "cukr", note: "" },
+      { pt: "a água", cs: "voda", note: "" },
+      { pt: "o sumo", cs: "džus", note: "EP výraz (BR: o suco)" },
+      { pt: "o bolo", cs: "dort / koláč", note: "" },
+      { pt: "a torrada", cs: "topinka / toast", note: "" },
+      { pt: "a tosta", cs: "teplý toustový sendvič", note: "" },
+      { pt: "o pastel de nata", cs: "krémový košíček", note: "národní specialita!" },
+      { pt: "a ementa", cs: "jídelní / nápojový lístek", note: "EP (BR: o cardápio)" },
+      { pt: "o empregado", cs: "číšník", note: "plně: empregado de mesa" },
+      { pt: "a empregada", cs: "číšnice", note: "" },
+      { pt: "a mesa", cs: "stůl", note: "" },
+      { pt: "a cadeira", cs: "židle", note: "" },
+      { pt: "a conta", cs: "účet", note: "" },
+      { pt: "o pequeno-almoço", cs: "snídaně", note: "doslova: malý oběd" },
+      { pt: "quente", cs: "horký / teplý", note: "" },
+      { pt: "frio", cs: "studený", note: "" },
+      { pt: "queria...", cs: "chtěl/a bych...", note: "zdvořilejší než quero" },
+      { pt: "faz favor", cs: "prosím / promiňte", note: "typicky EP" },
+      { pt: "obrigado / obrigada", cs: "děkuji", note: "muž: -o, žena: -a" },
+      { pt: "de nada", cs: "není zač", note: "" },
+      { pt: "com leite", cs: "s mlékem", note: "" },
+      { pt: "sem açúcar", cs: "bez cukru", note: "" },
+      { pt: "Quanto custa?", cs: "Kolik to stojí?", note: "" },
+      { pt: "Pode trazer...?", cs: "Můžete přinést...?", note: "" },
+      { pt: "Está livre?", cs: "Je tu volno?", note: "" },
+    ],
+    phrases: [
+      { pt: "Faz favor! Uma chávena de café.", cs: "Promiňte! Jeden šálek kávy." },
+      { pt: "Queria um pastel de nata e um sumo de laranja.", cs: "Chtěl/a bych košíček a pomerančový džus." },
+      { pt: "Pode trazer a conta, faz favor?", cs: "Můžete přinést účet, prosím?" },
+      { pt: "Está livre esta mesa?", cs: "Je tento stůl volný?" },
+      { pt: "Um café, se faz favor.", cs: "Jedno espresso, prosím." },
+      { pt: "Tem a ementa, por favor?", cs: "Máte lístek, prosím?" },
+    ],
+    tips: [
+      { icon: "👄", title: "Polykání samohlásek", body: "Evropská portugalština (EP) polyká nepřízvučné samohlásky. 'obrigado' zní jako 'brigádu', 'de nada' jako 'dnáda'. Brazilci vyslovují každou hlásku – to je velký rozdíl!" },
+      { icon: "🔚", title: "Koncové -o se vyslovuje jako [u]", body: "V EP se nepřízvučné 'o' na konci slova vyslovuje jako 'u'. 'copo' = [kópu], 'obrigado' = [brigádu]." },
+      { icon: "🌊", title: "Nosové samohlásky", body: "Portuglština má nosové samohlásky psané jako -ão, -ã, -em. 'não' (ne) = nosové ã + w na konci. Trénuj každý den!" },
+      { icon: "⚡", title: "Faz favor vs. Por favor", body: "'Faz favor' je typicky EP – slouží k přivolání číšníka. 'Por favor' se spíše dává na konec věty." },
+      { icon: "🧑", title: "Obrigado nebo Obrigada?", body: "Shoduje se s MLUVČÍM, ne s osobou, které děkuješ! Muž = obrigado, žena = obrigada vždy." },
+      { icon: "☕", title: "Druhy kávy v EP", body: "Um café = espresso. Um café com leite = větší káva s mlékem. Uma meia de leite = půl mléka, půl kávy." },
+    ],
+    homework: ["Přepiš všechna slovíčka včetně členu (o / a)", "Napiš 5 vět z kavárny", "Poslechni podcast – zapiš kavárenská slova, která poznáš"],
+  },
+  {
+    id: 2, emoji: "🛒", topic: "No Supermercado", subtitle: "V supermarketu",
+    vocabulary: [
+      { pt: "o supermercado", cs: "supermarket", note: "" },
+      { pt: "a loja", cs: "obchod", note: "" },
+      { pt: "o mercado", cs: "tržiště / trh", note: "" },
+      { pt: "o talho", cs: "řeznictví", note: "EP (BR: o açougue)" },
+      { pt: "a padaria", cs: "pekárna", note: "" },
+      { pt: "a pastelaria", cs: "cukrárna / pečivárna", note: "" },
+      { pt: "o pão", cs: "chléb", note: "" },
+      { pt: "a carne", cs: "maso", note: "" },
+      { pt: "o frango", cs: "kuře", note: "" },
+      { pt: "o peixe", cs: "ryba", note: "" },
+      { pt: "os legumes", cs: "zelenina", note: "vždy množné číslo" },
+      { pt: "a fruta", cs: "ovoce", note: "" },
+      { pt: "a maçã", cs: "jablko", note: "nosová samohláska!" },
+      { pt: "a laranja", cs: "pomeranč", note: "" },
+      { pt: "o tomate", cs: "rajče", note: "" },
+      { pt: "a batata", cs: "brambora", note: "" },
+      { pt: "o queijo", cs: "sýr", note: "" },
+      { pt: "os ovos", cs: "vejce (pl.)", note: "jedno = o ovo" },
+      { pt: "a manteiga", cs: "máslo", note: "" },
+      { pt: "o azeite", cs: "olivový olej", note: "" },
+      { pt: "o vinho", cs: "víno", note: "" },
+      { pt: "a cerveja", cs: "pivo", note: "" },
+      { pt: "a lista de compras", cs: "nákupní seznam", note: "" },
+      { pt: "o carrinho", cs: "nákupní vozík", note: "" },
+      { pt: "a caixa", cs: "pokladna", note: "" },
+      { pt: "o saco", cs: "taška", note: "" },
+      { pt: "Tem...?", cs: "Máte...?", note: "" },
+      { pt: "Quanto é?", cs: "Kolik to stojí?", note: "" },
+      { pt: "É tudo.", cs: "To je vše.", note: "" },
+      { pt: "Posso pagar com cartão?", cs: "Mohu platit kartou?", note: "" },
+    ],
+    phrases: [
+      { pt: "Tem pão fresco?", cs: "Máte čerstvý chléb?" },
+      { pt: "Queria meio quilo de queijo.", cs: "Chtěl/a bych půl kila sýra." },
+      { pt: "Onde estão os legumes?", cs: "Kde je zelenina?" },
+      { pt: "Posso pagar com cartão, faz favor?", cs: "Mohu platit kartou, prosím?" },
+    ],
+    tips: [
+      { icon: "🔊", title: "-lh- a -nh- jsou iberské hlásky", body: "'talho' = t+lj+o, 'vinho' = v+nj+o. V EP jsou tyto hlásky výraznější než v brazilské PT." },
+      { icon: "🍞", title: "Množné číslo slov na -ão", body: "'o pão' → 'os pães'. Slova na -ão mají různá mn. čísla: -ões, -ãos, -ães. Nepravidelné – je třeba se naučit!" },
+      { icon: "📏", title: "Míry a váhy", body: "um quilo, meio quilo, cem gramas, um litro. Př.: 'Queria 200 gramas de presunto.'" },
+      { icon: "🛍️", title: "Obaly jsou zpoplatněné", body: "V Portuglsku se za plastový sák platí. Na pokladně: 'Quer saco?' Odpověz 'Sim, faz favor' nebo 'Não, obrigado/a'." },
+    ],
+    homework: ["Napiš svůj skutečný nákupní seznam v portuglštině", "Procvič: Queria + množství + potravina", "Zapamatuj: talho, vinho, maçã – výslovnost"],
+  },
+  {
+    id: 3, emoji: "🚇", topic: "Transportes", subtitle: "Doprava",
+    vocabulary: [
+      { pt: "o metro", cs: "metro", note: "" },
+      { pt: "o autocarro", cs: "autobus", note: "EP (BR: o ônibus)" },
+      { pt: "o elétrico", cs: "tramvaj", note: "EP; v Lisabonu č. 28!" },
+      { pt: "o táxi", cs: "taxi", note: "" },
+      { pt: "o comboio", cs: "vlak", note: "EP (BR: o trem)" },
+      { pt: "o avião", cs: "letadlo", note: "" },
+      { pt: "o barco", cs: "loď / člun", note: "" },
+      { pt: "a bicicleta", cs: "kolo", note: "" },
+      { pt: "o carro", cs: "auto", note: "" },
+      { pt: "a paragem", cs: "zastávka", note: "EP (BR: a parada)" },
+      { pt: "a estação", cs: "stanice / nádraží", note: "" },
+      { pt: "o aeroporto", cs: "letiště", note: "" },
+      { pt: "a saída", cs: "výstup / východ", note: "" },
+      { pt: "a entrada", cs: "vstup / vchod", note: "" },
+      { pt: "o bilhete", cs: "jízdenka", note: "" },
+      { pt: "a linha", cs: "linka", note: "" },
+      { pt: "a esquerda", cs: "vlevo", note: "" },
+      { pt: "a direita", cs: "vpravo", note: "" },
+      { pt: "em frente", cs: "rovně", note: "" },
+      { pt: "perto", cs: "blízko", note: "" },
+      { pt: "longe", cs: "daleko", note: "" },
+      { pt: "Onde é...?", cs: "Kde je...?", note: "" },
+      { pt: "Como chego a...?", cs: "Jak se dostanu do...?", note: "" },
+      { pt: "a que horas?", cs: "v kolik hodin?", note: "" },
+      { pt: "o atraso", cs: "zpoždění", note: "" },
+      { pt: "apanhar", cs: "stihnout / nasednout", note: "EP; apanhar o autocarro" },
+      { pt: "descer", cs: "vystoupit", note: "" },
+      { pt: "seguinte", cs: "následující", note: "" },
+      { pt: "próximo/a", cs: "příští / nejbližší", note: "" },
+      { pt: "É longe daqui?", cs: "Je to daleko odtud?", note: "" },
+    ],
+    phrases: [
+      { pt: "Onde é a paragem do autocarro?", cs: "Kde je autobusová zastávka?" },
+      { pt: "Queria um bilhete para Lisboa.", cs: "Chtěl/a bych jízdenku do Lisabonu." },
+      { pt: "A que horas parte o próximo comboio?", cs: "V kolik odjíždí příští vlak?" },
+      { pt: "Tenho de descer aqui?", cs: "Mám tu vystoupit?" },
+      { pt: "Vire à esquerda e siga em frente.", cs: "Zahněte vlevo a jděte rovně." },
+    ],
+    tips: [
+      { icon: "🚎", title: "Autocarro vs. ônibus", body: "'O autocarro' je čistě EP. Brazilci říkají 'ônibus'. Pokud řekneš 'autocarro' v Brazílii, pochopí tě, ale bude znít zvláštně." },
+      { icon: "🚋", title: "Elétrico 28 – lisabonská ikona", body: "Tramvaj č. 28 je nejslavnější v Lisabonu. Říkej 'o elétrico', ne 'a tramway'!" },
+      { icon: "🅰️", title: "Apanhar = chytit / stihnout", body: "'Apanhar o metro' = nasednout do metra / stihnout metro. Br: 'pegar o metrô'." },
+      { icon: "🗺️", title: "Ser vs. estar při navigaci", body: "'Onde é a estação?' (kde BÝVÁ = permanentní místo) vs. 'Onde está o autocarro?' (kde JE teď)." },
+    ],
+    homework: ["Napiš trasu z domova do práce/školy v EP", "Zapamatuj: autocarro, elétrico, comboio jsou čistě EP slova"],
+  },
+  {
+    id: 4, emoji: "🏠", topic: "Em Casa", subtitle: "Doma",
+    vocabulary: [
+      { pt: "a casa", cs: "dům / domov", note: "" },
+      { pt: "o apartamento", cs: "byt", note: "" },
+      { pt: "o andar", cs: "patro", note: "" },
+      { pt: "o rés-do-chão", cs: "přízemí", note: "EP; = 0. patro" },
+      { pt: "a sala de estar", cs: "obývací pokoj", note: "" },
+      { pt: "o quarto", cs: "ložnice / pokoj", note: "" },
+      { pt: "a cozinha", cs: "kuchyně", note: "" },
+      { pt: "a casa de banho", cs: "koupelna / záchod", note: "EP (BR: o banheiro)" },
+      { pt: "a varanda", cs: "balkon", note: "" },
+      { pt: "o jardim", cs: "zahrada", note: "" },
+      { pt: "a porta", cs: "dveře", note: "" },
+      { pt: "a janela", cs: "okno", note: "" },
+      { pt: "o sofá", cs: "pohovka", note: "" },
+      { pt: "a cama", cs: "postel", note: "" },
+      { pt: "a mesa", cs: "stůl", note: "" },
+      { pt: "o fogão", cs: "sporák", note: "" },
+      { pt: "o frigorífico", cs: "lednice", note: "EP (BR: a geladeira)" },
+      { pt: "a máquina de lavar", cs: "pračka", note: "" },
+      { pt: "o armário", cs: "skříň", note: "" },
+      { pt: "a luz", cs: "světlo", note: "" },
+      { pt: "o aquecimento", cs: "topení", note: "" },
+      { pt: "arrumar", cs: "uklidit", note: "" },
+      { pt: "limpar", cs: "čistit / mýt", note: "" },
+      { pt: "cozinhar", cs: "vařit", note: "" },
+      { pt: "alugar", cs: "pronajmout si", note: "" },
+      { pt: "a renda", cs: "nájemné", note: "" },
+      { pt: "ao lado de", cs: "vedle", note: "" },
+      { pt: "em frente de", cs: "naproti", note: "" },
+      { pt: "atrás de", cs: "za", note: "" },
+      { pt: "dentro de", cs: "uvnitř", note: "" },
+    ],
+    phrases: [
+      { pt: "Moro num apartamento no terceiro andar.", cs: "Bydlím v bytě ve třetím patře." },
+      { pt: "A casa de banho fica ao lado do quarto.", cs: "Koupelna je vedle ložnice." },
+      { pt: "Quanto é a renda por mês?", cs: "Kolik je nájem za měsíc?" },
+      { pt: "O frigorífico está avariado.", cs: "Lednice je rozbitá." },
+    ],
+    tips: [
+      { icon: "🏢", title: "Rés-do-chão = přízemí (0. patro)", body: "V Portuglsku (jako v celé Evropě) je přízemí = 0. patro. První patro = primeiro andar. Číslování se liší od USA!" },
+      { icon: "🚿", title: "Casa de banho vs. banheiro", body: "'Casa de banho' = EP výraz pro koupelnu i záchod. Na veřejnosti hledej 'WC' nebo 'Sanitários'." },
+      { icon: "❄️", title: "Frigorífico – typicky EP", body: "'O frigorífico' vs. BR 'geladeira'. Zcela různá slova pro stejnou věc!" },
+      { icon: "📐", title: "Předložky místa", body: "ao lado de, em frente de, atrás de, dentro de, fora de. Splývají s členem: ao lado do quarto (vedle ložnice)." },
+    ],
+    homework: ["Nakresli půdorys svého bytu a pojmenuj místnosti", "Napiš 5 vět popisujících byt (kde co je)", "Procvič předložky místa – 3 věty s ao lado de, em frente de, atrás de"],
+  },
+  {
+    id: 5, emoji: "👋", topic: "Apresentações", subtitle: "Představování se",
+    vocabulary: [
+      { pt: "o nome", cs: "jméno", note: "" },
+      { pt: "o apelido", cs: "příjmení", note: "EP (BR: o sobrenome)" },
+      { pt: "Olá!", cs: "Ahoj!", note: "" },
+      { pt: "Bom dia!", cs: "Dobré ráno / dobrý den!", note: "do cca 12:00" },
+      { pt: "Boa tarde!", cs: "Dobré odpoledne!", note: "12:00–19:00" },
+      { pt: "Boa noite!", cs: "Dobrý večer / dobrou noc!", note: "od 19:00" },
+      { pt: "Tudo bem?", cs: "Jak se máš?", note: "" },
+      { pt: "Chamo-me...", cs: "Jmenuji se...", note: "doslova: volám se" },
+      { pt: "Como se chama?", cs: "Jak se jmenujete?", note: "formální" },
+      { pt: "De onde é?", cs: "Odkud jste?", note: "formální" },
+      { pt: "Sou de...", cs: "Jsem z...", note: "" },
+      { pt: "Sou checo / checa", cs: "Jsem Čech / Češka", note: "" },
+      { pt: "Falo português.", cs: "Mluvím portugalsky.", note: "" },
+      { pt: "Não falo bem português.", cs: "Nemluvím dobře portugalsky.", note: "" },
+      { pt: "Fala inglês?", cs: "Mluvíte anglicky?", note: "" },
+      { pt: "Pode falar mais devagar?", cs: "Můžete mluvit pomaleji?", note: "KLÍČOVÁ fráze!" },
+      { pt: "Não percebi.", cs: "Nerozuměl/a jsem.", note: "" },
+      { pt: "Pode repetir?", cs: "Můžete zopakovat?", note: "" },
+      { pt: "Muito prazer!", cs: "Velmi mě těší!", note: "" },
+      { pt: "Igualmente!", cs: "Vzájemně!", note: "" },
+      { pt: "Até logo!", cs: "Na shledanou (brzy)!", note: "" },
+      { pt: "Até amanhã!", cs: "Na shledanou zítra!", note: "" },
+      { pt: "Tchau!", cs: "Čau!", note: "" },
+      { pt: "Boa sorte!", cs: "Hodně štěstí!", note: "" },
+      { pt: "Estou a aprender português.", cs: "Učím se portuglsky.", note: "EP průběhový čas!" },
+      { pt: "um pouco", cs: "trochu", note: "" },
+      { pt: "devagar", cs: "pomalu", note: "" },
+      { pt: "perceber", cs: "rozumět / pochopit", note: "" },
+      { pt: "repetir", cs: "zopakovat", note: "" },
+    ],
+    phrases: [
+      { pt: "Olá! Chamo-me Jan. Sou checo.", cs: "Ahoj! Jmenuji se Jan. Jsem Čech." },
+      { pt: "Muito prazer! De onde és?", cs: "Velmi mě těší! Odkud jsi?" },
+      { pt: "Falo um pouco de português.", cs: "Mluvím trochu portugalsky." },
+      { pt: "Pode falar mais devagar, por favor?", cs: "Můžete mluvit pomaleji, prosím?" },
+      { pt: "Estou a aprender português.", cs: "Učím se portugalsky." },
+    ],
+    tips: [
+      { icon: "🤝", title: "Você vs. o senhor", body: "V EP se 'você' (vy) používá méně – Portuguézci říkají 'O senhor quer...?' místo 'Você quer...?'. Je to zdvořilejší." },
+      { icon: "⏩", title: "Průběhový čas v EP", body: "'Estou a aprender' (EP) = 'Estou aprendendo' (BR). V EP: estar + a + infinitiv. V BR: estar + gerundium (-ndo)." },
+      { icon: "📛", title: "Apelido = příjmení!", body: "'O apelido' v EP = příjmení. V BR může 'apelido' znamenat přezdívku. Stejné slovo, jiný význam!" },
+      { icon: "🗣️", title: "Záchranná fráze", body: "'Pode falar mais devagar, por favor?' – nauč se ji nazpaměť! Portuguézci mluví rychle a spolykají slova." },
+    ],
+    homework: ["Napiš krátký odstavec o sobě v EP (5–7 vět)", "Procvič průběhový čas: estou a + infinitiv (5 příkladů)", "Nacvič celý dialog: pozdrav – jméno – odkud – rozloučení"],
+  },
+  {
+    id: 6, emoji: "🍽️", topic: "No Restaurante", subtitle: "V restauraci",
+    vocabulary: [
+      { pt: "o restaurante", cs: "restaurace", note: "" },
+      { pt: "a tasca", cs: "hospůdka / taverna", note: "typicky EP" },
+      { pt: "a esplanada", cs: "zahrádka (venkovní)", note: "" },
+      { pt: "o prato", cs: "talíř / jídlo", note: "" },
+      { pt: "o prato do dia", cs: "denní menu", note: "" },
+      { pt: "a entrada", cs: "předkrm", note: "! stejné jako vstup" },
+      { pt: "o prato principal", cs: "hlavní chod", note: "" },
+      { pt: "a sobremesa", cs: "dezert", note: "" },
+      { pt: "a sopa", cs: "polévka", note: "" },
+      { pt: "a salada", cs: "salát", note: "" },
+      { pt: "grelhado/a", cs: "grilovaný/á", note: "" },
+      { pt: "assado/a", cs: "pečený/á", note: "" },
+      { pt: "frito/a", cs: "smažený/á", note: "" },
+      { pt: "cozido/a", cs: "vařený/á", note: "" },
+      { pt: "o bacalhau", cs: "treska (solená)", note: "národní jídlo!" },
+      { pt: "o arroz", cs: "rýže", note: "" },
+      { pt: "as batatas fritas", cs: "hranolky", note: "" },
+      { pt: "o sal", cs: "sůl", note: "" },
+      { pt: "a pimenta", cs: "pepř", note: "" },
+      { pt: "a garrafa", cs: "lahev", note: "" },
+      { pt: "bem passado", cs: "dobře propečený", note: "" },
+      { pt: "mal passado", cs: "krvavý (steak)", note: "" },
+      { pt: "Está delicioso!", cs: "Je to vynikající!", note: "" },
+      { pt: "Não como...", cs: "Nejím...", note: "" },
+      { pt: "Sou alérgico/a a...", cs: "Jsem alergický/á na...", note: "" },
+      { pt: "A conta, se faz favor.", cs: "Účet, prosím.", note: "" },
+      { pt: "O serviço está incluído?", cs: "Je zahrnuto spropitné?", note: "" },
+      { pt: "O que recomenda?", cs: "Co doporučujete?", note: "" },
+      { pt: "Uma mesa para dois.", cs: "Stůl pro dva.", note: "" },
+    ],
+    phrases: [
+      { pt: "Uma mesa para dois, por favor.", cs: "Stůl pro dva, prosím." },
+      { pt: "O que recomenda?", cs: "Co doporučujete?" },
+      { pt: "Queria o prato do dia, por favor.", cs: "Chtěl/a bych denní menu, prosím." },
+      { pt: "Pode trazer mais pão?", cs: "Můžete přinést více chleba?" },
+      { pt: "A conta, se faz favor. O serviço está incluído?", cs: "Účet prosím. Je zahrnuto spropitné?" },
+    ],
+    tips: [
+      { icon: "🐟", title: "Bacalhau – národní obsese", body: "Říká se, že existuje 365 receptů na tresku – jeden na každý den. Nejčastější: bacalhau à Brás, bacalhau com natas." },
+      { icon: "🫓", title: "Couvert – pozor, platí se!", body: "Chléb, olivy, máslo přinesené automaticky = 'couvert' – účtuje se zvlášť! Nechceš platit? Řekni: 'Não quero couvert, obrigado/a.'" },
+      { icon: "🍷", title: "Víno v Portuglsku", body: "Vinho verde = mladé perlivé víno ze severu. Tinto = červené, branco = bílé. 'Um copo de vinho tinto, por favor.'" },
+      { icon: "🕐", title: "Časy jídel", body: "Almoço (oběd): 12:30–14:30. Jantar (večeře): 20:00–22:00. Restaurace otevírají na večeři kolem 19:30 – dříve bývají prázdné!" },
+    ],
+    homework: ["Napiš kompletní objednávku (předkrm, hlavní, dezert, nápoj)", "Zapamatuj tip o couvert – ušetří ti peníze!", "Přepiš dialog: vstup → objednávka → platba"],
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE & STORAGE
+// ─────────────────────────────────────────────────────────────────────────────
+let state = {
+  doneLessons: [],
+  quizHistory: [],
+  customWords: [],
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('pt_app_state');
+    if (s) state = { ...state, ...JSON.parse(s) };
+  } catch(e) {}
+}
+
+function saveState() {
+  try { localStorage.setItem('pt_app_state', JSON.stringify(state)); } catch(e) {}
+}
+
+function toggleLessonDone(id) {
+  const idx = state.doneLessons.indexOf(id);
+  if (idx >= 0) state.doneLessons.splice(idx, 1);
+  else state.doneLessons.push(id);
+  saveState();
+  renderProgress();
+  renderLessonNav();
+  showToast(state.doneLessons.includes(id) ? '✅ Lekce označena jako hotová!' : 'Lekce odznačena');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+
+  if (id === 'progress') renderProgress();
+  if (id === 'quiz') renderQuizSetup();
+  if (id === 'custom') renderCustomVocab();
+  if (id === 'grammar') renderGrammar();
+  if (id === 'numbers') renderNumbers();
+
+  closeSidebar();
+  window.scrollTo(0, 0);
+}
+
+function showLesson(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-lesson-' + id);
+  if (page) page.classList.add('active');
+  const nav = document.getElementById('nav-lesson-' + id);
+  if (nav) nav.classList.add('active');
+  closeSidebar();
+  window.scrollTo(0, 0);
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER LESSONS
+// ─────────────────────────────────────────────────────────────────────────────
+function renderLessonNav() {
+  const container = document.getElementById('lesson-nav');
+  container.innerHTML = LESSONS.map(l => `
+    <div class="nav-item" onclick="showLesson(${l.id})" id="nav-lesson-${l.id}">
+      <span>${l.emoji}</span>
+      <span>Lekce ${l.id}: ${l.topic}</span>
+      ${state.doneLessons.includes(l.id) ? '<span class="nav-badge">✓</span>' : ''}
+    </div>
+  `).join('');
+}
+
+function renderLessonPages() {
+  const container = document.getElementById('lesson-pages');
+  container.innerHTML = LESSONS.map(l => `
+    <div class="page" id="page-lesson-${l.id}">
+      ${state.doneLessons.includes(l.id) ? `
+        <div class="done-banner">
+          ✅ Tuto lekci máš označenou jako hotovou!
+          <button class="undone-btn" onclick="toggleLessonDone(${l.id})">Odznačit</button>
+        </div>` : ''}
+
+      <div class="page-header">
+        <div>
+          <div class="lesson-badge">Lekce ${l.id} · Evropská Portugalština</div>
+          <div class="page-title">${l.emoji} ${l.topic}</div>
+          <div class="page-subtitle">${l.subtitle} · ${l.vocabulary.length} slovíček</div>
+        </div>
+        <button onclick="toggleLessonDone(${l.id})" style="padding:10px 18px;background:${state.doneLessons.includes(l.id) ? 'var(--green)' : 'var(--navy)'};color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;">
+          ${state.doneLessons.includes(l.id) ? '✅ Hotovo' : '○ Označit jako hotové'}
+        </button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'vocab-${l.id}','lesson-${l.id}')">📖 Slovíčka</button>
+        <button class="tab-btn" onclick="switchTab(this,'phrases-${l.id}','lesson-${l.id}')">💬 Fráze</button>
+        <button class="tab-btn" onclick="switchTab(this,'tips-${l.id}','lesson-${l.id}')">💡 Tipy</button>
+        <button class="tab-btn" onclick="switchTab(this,'hw-${l.id}','lesson-${l.id}')">✏️ Úkol</button>
+      </div>
+
+      <div class="tab-content active" id="tab-vocab-${l.id}">
+        <table class="vocab-table">
+          <thead><tr>
+            <th style="width:35%">Portugalsky</th>
+            <th style="width:30%">Česky</th>
+            <th>Poznámka</th>
+          </tr></thead>
+          <tbody>
+            ${l.vocabulary.map(w => `<tr>
+              <td class="pt-word">${w.pt}</td>
+              <td class="cs-word">${w.cs}</td>
+              <td class="note-text">${w.note}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-content" id="tab-phrases-${l.id}">
+        ${l.phrases.map(ph => `
+          <div class="phrase-card">
+            <div class="phrase-pt">${ph.pt}</div>
+            <div class="phrase-cs">${ph.cs}</div>
+          </div>`).join('')}
+      </div>
+
+      <div class="tab-content" id="tab-tips-${l.id}">
+        ${l.tips.map(t => `
+          <div class="tip-card">
+            <div class="tip-header">
+              <span class="tip-icon">${t.icon}</span>
+              <span class="tip-title">${t.title}</span>
+            </div>
+            <div class="tip-body">${t.body}</div>
+          </div>`).join('')}
+      </div>
+
+      <div class="tab-content" id="tab-hw-${l.id}">
+        <div class="homework-box">
+          <h3>✏️ Domácí úkol – Lekce ${l.id}</h3>
+          <ol>${l.homework.map(hw => `<li>${hw}</li>`).join('')}</ol>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function switchTab(btn, tabId, group) {
+  const page = btn.closest('.page');
+  page.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  page.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROGRESS PAGE
+// ─────────────────────────────────────────────────────────────────────────────
+function renderProgress() {
+  const totalWords = LESSONS.reduce((s, l) => s + l.vocabulary.length, 0) + state.customWords.length;
+  const done = state.doneLessons.length;
+  const quizzes = state.quizHistory.length;
+  const avgScore = quizzes ? Math.round(state.quizHistory.reduce((s, h) => s + h.score, 0) / quizzes) : 0;
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${done}/${LESSONS.length}</div><div class="stat-label">Lekce hotovy</div></div>
+    <div class="stat-box"><div class="stat-num">${totalWords}</div><div class="stat-label">Celkem slovíček</div></div>
+    <div class="stat-box"><div class="stat-num">${quizzes}</div><div class="stat-label">Kvízy splněny</div></div>
+    <div class="stat-box"><div class="stat-num">${quizzes ? avgScore + '%' : '—'}</div><div class="stat-label">Průměrné skóre</div></div>
+  `;
+
+  document.getElementById('progress-grid').innerHTML = LESSONS.map(l => `
+    <div class="progress-card ${state.doneLessons.includes(l.id) ? 'done' : ''}" onclick="showLesson(${l.id})">
+      <div class="progress-check" onclick="event.stopPropagation();toggleLessonDone(${l.id})">
+        ${state.doneLessons.includes(l.id) ? '✓' : ''}
+      </div>
+      <div class="progress-emoji">${l.emoji}</div>
+      <div class="progress-lesson-num">Lekce ${l.id}</div>
+      <div class="progress-lesson-name">${l.topic}</div>
+      <div class="progress-count">${l.vocabulary.length} slovíček</div>
+    </div>
+  `).join('');
+
+  const histEl = document.getElementById('quiz-history-list');
+  if (state.quizHistory.length === 0) {
+    histEl.innerHTML = '<p style="color:var(--muted);font-size:14px;font-style:italic">Zatím žádné kvízy. Začni procvičovat!</p>';
+  } else {
+    histEl.innerHTML = state.quizHistory.slice().reverse().slice(0, 10).map(h => `
+      <div class="history-item">
+        <span>${h.date} · ${h.lessonName}</span>
+        <span class="history-score">${h.correct}/${h.total} (${h.score}%)</span>
+      </div>`).join('');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUIZ
+// ─────────────────────────────────────────────────────────────────────────────
+let quiz = { words: [], idx: 0, correct: 0, mode: 'mc', dir: 'pt-cs', revealed: false };
+
+function getAllQuizWords() {
+  let words = [];
+  LESSONS.forEach(l => l.vocabulary.forEach(w => words.push({ ...w, lessonId: l.id, lessonName: l.topic })));
+  state.customWords.forEach(w => words.push({ ...w, lessonId: 0, lessonName: 'Vlastní' }));
+  return words;
+}
+
+function renderQuizSetup() {
+  const setup = document.getElementById('quiz-setup-area');
+  const run = document.getElementById('quiz-run-area');
+  run.style.display = 'none';
+  setup.style.display = 'block';
+
+  setup.innerHTML = `
+    <div class="quiz-setup">
+      <h2>Nastav kvíz</h2>
+
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Která lekce?</p>
+      <div class="quiz-options" id="quiz-lesson-opts">
+        <button class="quiz-option-btn selected" data-lesson="all" onclick="selectOpt(this,'quiz-lesson-opts')">Vše (${getAllQuizWords().length} slov)</button>
+        ${LESSONS.map(l => `<button class="quiz-option-btn" data-lesson="${l.id}" onclick="selectOpt(this,'quiz-lesson-opts')">${l.emoji} Lekce ${l.id}</button>`).join('')}
+        ${state.customWords.length > 0 ? `<button class="quiz-option-btn" data-lesson="custom" onclick="selectOpt(this,'quiz-lesson-opts')">✏️ Vlastní (${state.customWords.length})</button>` : ''}
+      </div>
+
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;margin-top:16px">Směr překladu?</p>
+      <div class="quiz-options" id="quiz-dir-opts">
+        <button class="quiz-option-btn selected" data-val="pt-cs" onclick="selectOpt(this,'quiz-dir-opts')">🇵🇹 → 🇨🇿 Português → Česky</button>
+        <button class="quiz-option-btn" data-val="cs-pt" onclick="selectOpt(this,'quiz-dir-opts')">🇨🇿 → 🇵🇹 Česky → Português</button>
+      </div>
+
+      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;margin-top:16px">Typ kvízu?</p>
+      <div class="quiz-options" id="quiz-mode-opts">
+        <button class="quiz-option-btn selected" data-val="mc" onclick="selectOpt(this,'quiz-mode-opts')">🔤 4 možnosti (multiple choice)</button>
+        <button class="quiz-option-btn" data-val="reveal" onclick="selectOpt(this,'quiz-mode-opts')">👁 Odkryj a ohodnoť se sám</button>
+      </div>
+
+      <div style="margin-top:24px;display:flex;align-items:center;gap:20px">
+        <button class="start-quiz-btn" onclick="startQuiz()">▶ Spustit kvíz</button>
+        <span style="font-size:13px;color:var(--muted)">Otázky se zamíchají náhodně</span>
+      </div>
+    </div>
+  `;
+}
+
+function selectOpt(btn, groupId) {
+  document.getElementById(groupId).querySelectorAll('.quiz-option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function getOpt(groupId) {
+  const sel = document.querySelector(`#${groupId} .quiz-option-btn.selected`);
+  return sel ? sel.dataset.val || sel.dataset.lesson : null;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const lessonFilter = getOpt('quiz-lesson-opts');
+  const dir = getOpt('quiz-dir-opts') || 'pt-cs';
+  const mode = getOpt('quiz-mode-opts') || 'mc';
+
+  let pool = getAllQuizWords();
+  if (lessonFilter !== 'all') {
+    if (lessonFilter === 'custom') pool = pool.filter(w => w.lessonId === 0);
+    else pool = pool.filter(w => w.lessonId === parseInt(lessonFilter));
+  }
+
+  if (pool.length < 2) { showToast('Přidej více slovíček!'); return; }
+
+  quiz = { words: shuffle(pool), idx: 0, correct: 0, mode, dir, revealed: false, lessonName: lessonFilter === 'all' ? 'Vše' : (LESSONS.find(l=>l.id===parseInt(lessonFilter))?.topic || 'Vlastní') };
+
+  document.getElementById('quiz-setup-area').style.display = 'none';
+  document.getElementById('quiz-run-area').style.display = 'block';
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const run = document.getElementById('quiz-run-area');
+  if (quiz.idx >= quiz.words.length) { renderQuizResults(); return; }
+
+  const w = quiz.words[quiz.idx];
+  const question = quiz.dir === 'pt-cs' ? w.pt : w.cs;
+  const answer = quiz.dir === 'pt-cs' ? w.cs : w.pt;
+  const pct = Math.round((quiz.idx / quiz.words.length) * 100);
+
+  let answerHtml = '';
+
+  if (quiz.mode === 'mc') {
+    // Get 3 wrong answers from pool
+    const wrong = shuffle(quiz.words.filter((_, i) => i !== quiz.idx))
+      .slice(0, 3)
+      .map(x => quiz.dir === 'pt-cs' ? x.cs : x.pt);
+    const opts = shuffle([answer, ...wrong]);
+
+    answerHtml = `<div class="mc-options" id="mc-opts">
+      ${opts.map(opt => `<button class="mc-btn" onclick="checkMC(this,'${answer.replace(/'/g,"\\'")}','${opt.replace(/'/g,"\\'")}')">
+        ${opt}
+      </button>`).join('')}
+    </div>`;
+  } else {
+    answerHtml = `
+      <button class="reveal-btn" id="reveal-btn" onclick="revealAnswer('${answer.replace(/'/g,"\\'")}')">👁 Odkrýt překlad</button>
+      <div id="revealed-box" style="display:none">
+        <div class="revealed-answer">${answer}</div>
+        <div class="reveal-actions">
+          <button class="knew-btn yes" onclick="revealScore(true)">✅ Věděl/a jsem to</button>
+          <button class="knew-btn no" onclick="revealScore(false)">❌ Nevěděl/a jsem</button>
+        </div>
+      </div>`;
+  }
+
+  run.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-counter">${quiz.idx + 1} / ${quiz.words.length} · ✅ ${quiz.correct} správně</div>
+      <div class="quiz-direction">${quiz.dir === 'pt-cs' ? '🇵🇹 Português → Česky 🇨🇿' : '🇨🇿 Česky → Português 🇵🇹'}</div>
+      <div class="quiz-word">${question}</div>
+      ${w.note ? `<div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-style:italic">${w.note}</div>` : ''}
+      <div class="quiz-answer-area">${answerHtml}</div>
+    </div>
+    <button onclick="renderQuizSetup();document.getElementById('quiz-setup-area').style.display='block';document.getElementById('quiz-run-area').style.display='none';"
+      style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:8px">← Ukončit kvíz</button>
+  `;
+}
+
+function checkMC(btn, correctAnswer, chosen) {
+  document.querySelectorAll('.mc-btn').forEach(b => b.disabled = true);
+  if (chosen === correctAnswer) {
+    btn.classList.add('correct');
+    quiz.correct++;
+    setTimeout(() => { quiz.idx++; renderQuizQuestion(); }, 900);
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.mc-btn').forEach(b => {
+      if (b.textContent.trim() === correctAnswer) b.classList.add('correct');
+    });
+    setTimeout(() => { quiz.idx++; renderQuizQuestion(); }, 1400);
+  }
+}
+
+function revealAnswer(answer) {
+  document.getElementById('reveal-btn').style.display = 'none';
+  document.getElementById('revealed-box').style.display = 'block';
+}
+
+function revealScore(knew) {
+  if (knew) quiz.correct++;
+  quiz.idx++;
+  renderQuizQuestion();
+}
+
+function renderQuizResults() {
+  const run = document.getElementById('quiz-run-area');
+  const total = quiz.words.length;
+  const pct = Math.round((quiz.correct / total) * 100);
+  const stars = pct >= 90 ? '⭐⭐⭐' : pct >= 70 ? '⭐⭐' : '⭐';
+  const msg = pct >= 90 ? 'Výborně! 🎉' : pct >= 70 ? 'Dobrá práce! 💪' : 'Trénuj dál! 📚';
+
+  // Save to history
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('cs-CZ', { day: '2-digit', month: '2-digit', year: '2-digit' });
+  state.quizHistory.push({ date: dateStr, lessonName: quiz.lessonName, correct: quiz.correct, total, score: pct });
+  if (state.quizHistory.length > 50) state.quizHistory.shift();
+  saveState();
+
+  run.innerHTML = `
+    <div class="quiz-results">
+      <div class="result-stars">${stars}</div>
+      <div class="result-score">${pct}%</div>
+      <div class="result-label">${quiz.correct} z ${total} správně · ${msg}</div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:24px">
+        <button class="start-quiz-btn" onclick="startQuiz()">🔄 Znovu</button>
+        <button class="start-quiz-btn" style="background:var(--navy)" onclick="renderQuizSetup();document.getElementById('quiz-setup-area').style.display='block';document.getElementById('quiz-run-area').style.display='none';">⚙️ Nové nastavení</button>
+      </div>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CUSTOM VOCAB
+// ─────────────────────────────────────────────────────────────────────────────
+function addCustomWord() {
+  const pt = document.getElementById('input-pt').value.trim();
+  const cs = document.getElementById('input-cs').value.trim();
+  const note = document.getElementById('input-note').value.trim();
+  if (!pt || !cs) { showToast('Vyplň alespoň PT a CS pole!'); return; }
+  state.customWords.push({ pt, cs, note, id: Date.now() });
+  saveState();
+  document.getElementById('input-pt').value = '';
+  document.getElementById('input-cs').value = '';
+  document.getElementById('input-note').value = '';
+  renderCustomVocab();
+  showToast('✅ Slovíčko přidáno!');
+}
+
+function deleteCustomWord(id) {
+  state.customWords = state.customWords.filter(w => w.id !== id);
+  saveState();
+  renderCustomVocab();
+}
+
+function renderCustomVocab() {
+  const el = document.getElementById('custom-vocab-list');
+  if (state.customWords.length === 0) {
+    el.innerHTML = '<div class="custom-empty">Zatím žádná vlastní slovíčka.<br>Přidej si slovíčka z podcastu!</div>';
+    return;
+  }
+  el.innerHTML = `
+    <table class="vocab-table">
+      <thead><tr>
+        <th>Portugalsky</th><th>Česky</th><th>Poznámka</th><th style="width:40px"></th>
+      </tr></thead>
+      <tbody>
+        ${state.customWords.map(w => `<tr>
+          <td class="pt-word">${w.pt}</td>
+          <td class="cs-word">${w.cs}</td>
+          <td class="note-text">${w.note || ''}</td>
+          <td><button class="delete-btn" onclick="deleteCustomWord(${w.id})" title="Smazat">✕</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GRAMMAR
+// ─────────────────────────────────────────────────────────────────────────────
+function renderGrammar() {
+  document.getElementById('grammar-content').innerHTML = `
+    <div class="grammar-section">
+      <h2>Proč je důležité učit se „o café", ne jen „café"?</h2>
+      <p style="font-size:15px;line-height:1.8;color:#444;margin-bottom:20px">
+        Každé podstatné jméno v portuglštině má svůj rod – mužský nebo ženský. Člen (<em>artigo</em>) před slovem ti vždy napovídá rod. Bez znalosti rodu nelze správně tvořit věty!
+      </p>
+
+      <h3>Základní přehled členů</h3>
+      <table class="grammar-table">
+        <thead><tr><th></th><th>Mužský rod</th><th>Ženský rod</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Určitý (j.č.)</strong></td><td class="big">o</td><td class="big gold">a</td></tr>
+          <tr><td><strong>Určitý (mn.č.)</strong></td><td class="big">os</td><td class="big gold">as</td></tr>
+          <tr><td><strong>Neurčitý (j.č.)</strong></td><td class="big">um</td><td class="big gold">uma</td></tr>
+          <tr><td><strong>Neurčitý (mn.č.)</strong></td><td class="big">uns</td><td class="big gold">umas</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Jak poznat rod slova?</h3>
+      <table class="grammar-table">
+        <thead><tr><th>Mužský rod (o)</th><th>Ženský rod (a)</th></tr></thead>
+        <tbody>
+          <tr><td>Končí na <strong>-o</strong> → obvykle mužský</td><td>Končí na <strong>-a</strong> → obvykle ženský</td></tr>
+          <tr><td><em>o livro, o carro, o bolo</em></td><td><em>a mesa, a cadeira, a água</em></td></tr>
+          <tr><td>Výjimka: <strong>o dia</strong> (den) – mužský!</td><td>Výjimka: <strong>a mão</strong> (ruka) – ženský!</td></tr>
+          <tr><td>Slova na <strong>-ão</strong> → mužský (většina)</td><td>Slova na <strong>-ção, -são</strong> → ženský</td></tr>
+          <tr><td><em>o avião, o camião</em></td><td><em>a estação, a situação</em></td></tr>
+          <tr><td>Slova na <strong>-ema, -ma</strong> → mužský</td><td>Slova na <strong>-dade, -tude</strong> → ženský</td></tr>
+          <tr><td><em>o problema, o sistema</em></td><td><em>a cidade, a universidade</em></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Splývání členu s předložkou</h3>
+      <p style="font-size:14px;color:#555;margin-bottom:12px">V mluvené EP budeš toto slýchat neustále:</p>
+      <table class="grammar-table">
+        <thead><tr><th>Předložka</th><th>+ o</th><th>+ a</th><th>+ os</th><th>+ as</th></tr></thead>
+        <tbody>
+          <tr><td><strong>de</strong> (z, od)</td><td class="big" style="font-size:20px">do</td><td class="big gold" style="font-size:20px">da</td><td>dos</td><td>das</td></tr>
+          <tr><td><strong>em</strong> (v, na)</td><td class="big" style="font-size:20px">no</td><td class="big gold" style="font-size:20px">na</td><td>nos</td><td>nas</td></tr>
+          <tr><td><strong>a</strong> (k, do)</td><td class="big" style="font-size:20px">ao</td><td class="big gold" style="font-size:20px">à</td><td>aos</td><td>às</td></tr>
+          <tr><td><strong>por</strong> (přes, za)</td><td>pelo</td><td>pela</td><td>pelos</td><td>pelas</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box" style="margin-top:16px">
+        <strong>Příklady v praxi:</strong><br>
+        Sou de + o Porto → <strong>Sou do Porto.</strong> (Jsem z Porta.)<br>
+        Estou em + a casa → <strong>Estou na casa.</strong> (Jsem doma.)<br>
+        Vou a + o mercado → <strong>Vou ao mercado.</strong> (Jdu na trh.)<br>
+        Gosto de + as laranjas → <strong>Gosto das laranjas.</strong> (Mám rád pomeranče.)
+      </div>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NUMBERS
+// ─────────────────────────────────────────────────────────────────────────────
+function renderNumbers() {
+  const nums0_19 = [
+    {n:0,pt:'zero'},{n:1,pt:'um/uma'},{n:2,pt:'dois/duas'},{n:3,pt:'três'},{n:4,pt:'quatro'},
+    {n:5,pt:'cinco'},{n:6,pt:'seis'},{n:7,pt:'sete'},{n:8,pt:'oito'},{n:9,pt:'nove'},
+    {n:10,pt:'dez'},{n:11,pt:'onze'},{n:12,pt:'doze'},{n:13,pt:'treze'},{n:14,pt:'catorze'},
+    {n:15,pt:'quinze'},{n:16,pt:'dezasseis'},{n:17,pt:'dezassete'},{n:18,pt:'dezoito'},{n:19,pt:'dezanove'},
+  ];
+  const tens = [
+    {n:20,pt:'vinte'},{n:30,pt:'trinta'},{n:40,pt:'quarenta'},{n:50,pt:'cinquenta'},
+    {n:60,pt:'sessenta'},{n:70,pt:'setenta'},{n:80,pt:'oitenta'},{n:90,pt:'noventa'},
+    {n:100,pt:'cem / cento'},{n:200,pt:'duzentos/as'},{n:500,pt:'quinhentos/as'},{n:1000,pt:'mil'},
+  ];
+
+  document.getElementById('numbers-content').innerHTML = `
+    <div class="grammar-section">
+      <h2>Čísla 0–19</h2>
+      <div class="numbers-grid">
+        ${nums0_19.map(n => `<div class="num-card"><div class="num-n">${n.n}</div><div class="num-pt">${n.pt}</div></div>`).join('')}
+      </div>
+
+      <h2 style="margin-top:32px">Desítky a vyšší</h2>
+      <div class="numbers-grid">
+        ${tens.map(n => `<div class="num-card"><div class="num-n" style="font-size:22px">${n.n}</div><div class="num-pt">${n.pt}</div></div>`).join('')}
+      </div>
+
+      <div class="info-box" style="margin-top:20px">
+        <strong>Gramatika čísel:</strong><br>
+        <strong>1 a 2</strong> se shodují v rodě: um café (m.) / uma chávena (ž.) · dois copos (m.) / duas pessoas (ž.)<br>
+        <strong>200–900</strong> se shodují v rodě: duzentos euros / duzentas pessoas<br>
+        <strong>cem</strong> = přesně 100 · <strong>cento</strong> = 100 a více (cento e vinte = 120)<br>
+        <strong>Složená čísla</strong>: vinte e um (21), quarenta e cinco (45), cem e um = sto jedna
+      </div>
+
+      <h2 style="margin-top:32px">Řadové číslovky</h2>
+      <table class="grammar-table">
+        <thead><tr><th>Číslo</th><th>Mužský rod</th><th>Ženský rod</th><th>Příklad</th></tr></thead>
+        <tbody>
+          ${[['1.','primeiro','primeira','o primeiro andar'],['2.','segundo','segunda','a segunda rua'],['3.','terceiro','terceira','o terceiro café'],['4.','quarto','quarta','a quarta paragem'],['5.','quinto','quinta','o quinto dia'],].map((r,i) =>
+            `<tr><td>${r[0]}</td><td><strong>${r[1]}</strong></td><td><strong>${r[2]}</strong></td><td><em style="color:var(--muted)">${r[3]}</em></td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+loadState();
+renderLessonNav();
+renderLessonPages();
+renderProgress();
+renderQuizSetup();
+renderCustomVocab();
+renderGrammar();
+renderNumbers();
+</script>
+</body>
+</html>
